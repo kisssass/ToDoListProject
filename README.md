@@ -16,5 +16,5 @@
 - **Регистрация:** Пользователь может зарегистрироваться в системе, создавая новый аккаунт.выполненные/невыполненные.
 
 
-   [перейти]: <[http://daringfireball.net](https://drive.google.com/file/d/1K_jNLRbazD3j66g_nqvFRI5vlj0ZC-3p/view?usp=sharing)>
+   [перейти]: <https://drive.google.com/file/d/1K_jNLRbazD3j66g_nqvFRI5vlj0ZC-3p/view?usp=sharing>
    

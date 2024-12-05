@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css}" />
+    <style>
+        body {
+            display: flex; /* Используем Flexbox */
+            justify-content: center; /* Выравнивание по горизонтали */
+            align-items: center; /* Выравнивание по вертикали */
+            height: 100vh; /* Задаем высоту body на 100% высоты окна */
+            margin: 0; /* Убираем отступы */
+            background-color: #fffaad;
+        }
+        .logo {
+            font-family: 'Roboto', Arial, sans-serif;
+            color: #fa41cc;
+            font-size: 40px;
+        }
+        /* Стиль для активных кнопок */
+        .btn-primary {
+            background-color: #fa41cc;
+            border-color: #fa41cc;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+    <title>Редактировать задачу</title>
+</head>
+<body>
+<div class="container">
+    <div class="row mt-5">
+        <!-- Левая колонка с кнопкой назад -->
+        <div class="col-md-2">
+            <a class="btn btn-outline-success" th:href="@{/}">
+                <i class="bi bi-arrow-left-square-fill"></i> Назад
+            </a>
+        </div>
+
+        <!-- Правая колонка с формой редактирования -->
+        <div class="col-md-8">
+            <h2 class="logo">Редактировать задачу</h2>
+            <form class="row g-3" th:action="@{/todo/{id}(id=${todo.id})}" th:object="${todo}" method="POST">
+                <div class="mb-3">
+                    <label for="description" class="form-label">Описание</label>
+                    <input class="form-control"
+                           type="text"
+                           th:field="*{description}"
+                           id="description"
+                           placeholder="Описание"
+                    >
+                </div>
+                <div class="mb-3">
+                    <label for="color" class="form-label">Цвет</label>
+                    <select class="form-select" required th:field="*{color}" id="color" name="color">
+                        <option value="" disabled selected>Выберите цвет</option>
+                        <option value="null">Нет цвета</option>
+                        <option value="red">Красный</option>
+                        <option value="green">Зеленый</option>
+                        <option value="blue">Синий</option>
+                    </select>
+                </div>
+                <div class="mb-3 form-check">
+                    <input class="form-check-input"
+                           type="checkbox"
+                           id="inputIsComplete"
+                           th:field="*{isComplete}"
+                           th:checked="${isComplete} == true">
+                    <label class="form-check-label" for="inputIsComplete">
+                        Завершено?
+                    </label>
+                </div>
+
+                <!-- Скрытые поля -->
+                <input type="hidden" th:field="*{createdAt}" />
+                <input type="hidden" th:field="*{updatedAt}" />
+
+                <button type="submit" class="btn-primary">
+                    <i class="bi bi-plus-square-fill"></i> Обновить
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.min.js}"></script>
+</body>
+</html>

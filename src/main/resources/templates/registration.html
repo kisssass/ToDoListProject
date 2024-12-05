@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css}" />
+    <style>
+        body {
+            background-color: #fffaad;
+            text-align: center;
+        }
+        .logo {
+            font-family: 'Roboto', Arial, sans-serif;
+            color: #fa41cc;
+            font-size: 70px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .btn-primary {
+            background-color: #fa41cc;
+            border-color: #fa41cc;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+    <title>Регистрация</title>
+</head>
+<body>
+<div class="container">
+    <h1 class="logo">To-Do List</h1>
+    <h2>Регистрация</h2>
+    <hr />
+
+    <div th:if="${message}" class="alert alert-info" role="alert">
+        <span th:text="${message}"></span>
+    </div>
+
+    <form th:action="@{/registration}" method="post" class="mt-4">
+        <div class="mb-3">
+            <label for="firsName" class="form-label">Имя пользователя:</label>
+            <input type="text" id="firsName" name="firsName" class="form-control" placeholder="Введите имя" required/>
+        </div>
+        <div class="mb-3">
+            <label for="lastName" class="form-label">Фамилия пользователя:</label>
+            <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Введите фамилию" required/>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Логин:</label>
+            <input type="text" id="email" name="email" class="form-control" placeholder="Введите логин" required/>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Пароль:</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Введите пароль" required/>
+        </div>
+        <div class="mb-3">
+            <input type="submit" class="btn btn-primary" value="Зарегистрироваться"/>
+        </div>
+    </form>
+    <p>Есть аккаунт? <a th:href="@{/login}">Войдите</a>.</p>
+</div>
+<script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.min.js}"></script>
+</body>
+</html>

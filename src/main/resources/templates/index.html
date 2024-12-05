@@ -1,0 +1,217 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css}" />
+    <style>
+        body {
+            background-color: #fffaad;
+            text-align: center;
+        }
+        .logo {
+            font-family: 'Roboto', Arial, sans-serif;
+            color: #fa41cc;
+            font-size: 70px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        /* Стиль для активных кнопок */
+        .btn-group .btn.active {
+            /* Убираем outline-стилизацию для активных кнопок */
+            color: #fa41cc;
+        }
+    </style>
+    <title>Приложение To-Do List</title>
+</head>
+<body>
+<div class="container">
+    <div class="row mt-4">
+        <!-- Логотип и заголовок -->
+        <div class="col-md-8">
+            <h1 class="logo">Приложение To-Do List</h1>
+        </div>
+        <!-- Кнопка выхода -->
+        <div class="col-md-4 text-end">
+            <a class="btn btn-outline-danger" href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                Выйти
+            </a>
+            <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;"></form>
+        </div>
+    </div>
+    <hr />
+
+    <!-- Элементы фильтрации -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="btn-group" role="group" aria-label="Фильтр задач">
+                <button type="button" class="btn btn-outline-primary" id="filter-all" onclick="filterTasks('all')">Все задачи</button>
+                <button type="button" class="btn btn-outline-success" id="filter-complete" onclick="filterTasks('complete')">Завершённые задачи</button>
+                <button type="button" class="btn btn-outline-warning" id="filter-incomplete" onclick="filterTasks('incomplete')">Активные задачи</button>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <span style="color: #fa41cc; cursor: pointer;" id="filter-category">Фильтр по цветам:</span>
+        <div id="colorOptions" style="display: none;">
+            <a href="#" style="color: red;" onclick="filterTasksByColor('red')">Красный</a> |
+            <a href="#" style="color: blue;" onclick="filterTasksByColor('blue')">Синий</a> |
+            <a href="#" style="color: green;" onclick="filterTasksByColor('green')">Зелёный</a>
+        </div>
+    </div>
+
+    <!-- Таблица задач -->
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered table-striped" id="tasksTable" style="width: 100%;" border="1" bordercolor="grey">
+                <thead>
+                <tr>
+                    <th>Описание</th>
+                    <th>Завершено</th>
+                    <th>Создано</th>
+                    <th>Обновлено</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${todoItems}"
+                    th:class="${item.isComplete} ? 'alert alert-success' : 'alert alert-warning'"
+                    th:data-complete="${item.isComplete}"
+                    th:data-color="${item.color}">
+                    <td th:text="${item.description}" th:style="'background-color: ' + ${item.color}"></td>
+                    <td>
+                        <span th:if="${item.isComplete}" th:text="'Да'"></span>
+                        <span th:unless="${item.isComplete}" th:text="'Нет'"></span>
+                    </td>
+                    <td th:text="${item.createdAt}"></td>
+                    <td th:text="${item.updatedAt}"></td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a class="btn btn-info" th:href="@{/edit/{id}(id=${item.id})}">
+                                <i class="bi bi-pencil-fill"></i> Изменить</a>
+                            <a class="btn btn-danger" th:href="@{/delete/{id}(id=${item.id})}">
+                                <i class="bi bi-trash-fill"></i> Удалить</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Кнопка создания задачи -->
+    <div class="row mt-3">
+        <div class="col-12 text-end">
+            <a class="btn btn-outline-success" th:href="@{/create-todo}">
+                <i class="bi bi-plus-square-fill"></i> Создать задачу
+            </a>
+        </div>
+    </div>
+</div>
+<script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.min.js}"></script>
+<script>
+    /**
+     * Функция для фильтрации задач
+     * @param {string} filter - Тип фильтра ('all', 'complete', 'incomplete')
+     */
+    function filterTasks(filter) {
+        const table = document.getElementById('tasksTable');
+        const tbody = table.getElementsByTagName('tbody')[0];
+        const rows = tbody.getElementsByTagName('tr');
+
+        // Сброс активных классов на всех кнопках
+        document.getElementById('filter-all').classList.remove('active');
+        document.getElementById('filter-complete').classList.remove('active');
+        document.getElementById('filter-incomplete').classList.remove('active');
+
+
+        // Установка активного класса для выбранного фильтра и изменение стиля кнопки
+        switch (filter) {
+            case 'all':
+                setActiveButton('filter-all');
+                break;
+            case 'complete':
+                setActiveButton('filter-complete');
+                break;
+            case 'incomplete':
+                setActiveButton('filter-incomplete');
+                break;
+        }
+
+        for (let row of rows) {
+            const isComplete = row.getAttribute('data-complete') === 'true';
+
+            if (filter === 'all') {
+                row.style.display = '';
+            } else if (filter === 'complete' && isComplete) {
+                row.style.display = '';
+            } else if (filter === 'incomplete' && !isComplete) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+
+    /**
+     * Функция для установки активного состояния кнопки
+     * @param {string} buttonId - Идентификатор кнопки
+     */
+    function setActiveButton(buttonId) {
+        const buttons = ['filter-all', 'filter-complete', 'filter-incomplete'];
+        buttons.forEach(id => {
+            const button = document.getElementById(id);
+            if (id === buttonId) {
+                // Заменяем outline-класс на заполненный класс
+                if (id === 'filter-all') {
+                    button.classList.remove('btn-outline-primary');
+                    button.classList.add('btn-primary');
+                } else if (id === 'filter-complete') {
+                    button.classList.remove('btn-outline-success');
+                    button.classList.add('btn-success');
+                } else if (id === 'filter-incomplete') {
+                    button.classList.remove('btn-outline-warning');
+                    button.classList.add('btn-warning');
+                }
+                button.classList.add('active');
+            } else {
+                // Возвращаем outline-класс для неактивных кнопок
+                if (id === 'filter-all') {
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-outline-primary');
+                } else if (id === 'filter-complete') {
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-outline-success');
+                } else if (id === 'filter-incomplete') {
+                    button.classList.remove('btn-warning');
+                    button.classList.add('btn-outline-warning');
+                }
+                button.classList.remove('active');
+            }
+        });
+    }
+    // Функция для фильтрации задач по цвету
+   document.getElementById('filter-category').addEventListener('click', function() {
+        const options = document.getElementById('colorOptions');
+        options.style.display = options.style.display === 'none' ? 'block' : 'none';
+    });
+    function filterTasksByColor(color) {
+        const rows = document.querySelectorAll('#tasksTable tbody tr');
+        rows.forEach(row => {
+            const itemColor = row.getAttribute('data-color'); // Получаем цвет из атрибута data-color
+            if (itemColor && itemColor.toLowerCase() === color) {
+                row.style.display = ''; // Показываем строку
+            }
+            else {
+                row.style.display = 'none'; // Скрываем строку
+            }
+        });
+    }
+
+    // Инициализация: отображать все задачи и установить кнопку "Все" как активную
+    document.addEventListener('DOMContentLoaded', function() {
+        filterTasks('all');
+    });
+</script>
+</body>
+</html>

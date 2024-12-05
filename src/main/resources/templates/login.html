@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.2/css/bootstrap.min.css}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #fffaad;
+            text-align: center;
+        }
+        .logo {
+            font-family: 'Roboto', Arial, sans-serif;
+            color: #fa41cc;
+            font-size: 70px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .btn-primary {
+            background-color: #fa41cc;
+            border-color: #fa41cc;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .input-group-text {
+            cursor: pointer; /* Указатель при наведении на значок глаза */
+        }
+    </style>
+    <title>Авторизация</title>
+</head>
+<body>
+<div class="container">
+    <h1 class="logo">To-Do List</h1>
+    <h2>Авторизация</h2>
+    <hr />
+
+    <form th:action="@{/login}" method="post" class="mt-4">
+        <div class="mb-3">
+            <label for="username" class="form-label">Логин:</label>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Введите логин" required />
+        </div>
+        <div class="mb-3 input-group">
+            <label for="password" class="form-label">Пароль:</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Введите пароль" required />
+            <span class="input-group-text" onclick="togglePasswordVisibility()">
+                <i class="bi bi-eye" id="eye-icon"></i> <!-- Значок глаза -->
+            </span>
+        </div>
+        <div class="mb-3">
+            <input type="submit" class="btn btn-primary" value="Войти" />
+        </div>
+    </form>
+    <p>Нет аккаунта? <a th:href="@{/registration}">Зарегистрируйтесь</a>.</p>
+</div>
+<script th:src="@{/webjars/bootstrap/5.2.2/js/bootstrap.min.js}"></script>
+<script>
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eye-icon');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('bi-eye');
+            eyeIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('bi-eye-slash');
+            eyeIcon.classList.add('bi-eye');
+        }
+    }
+</script>
+</body>
+</html>
